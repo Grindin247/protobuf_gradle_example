@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -18,13 +19,15 @@ public class App {
         byte[] data = new byte[4096]; // Max length
         DatagramPacket packet = new DatagramPacket(data, data.length);
         packet.setAddress(InetAddress.getByName(host));
-        packet.setPort(port)
+        packet.setPort(port);
 
         //Different ways to configure messages
-        AddressBookProtos.Person.Builder person = AddressBookProtos.Person.newBuilder();
-        person.setId(1);
-        person.setName("Jane Smith");
-        person.setEmail("jsmith@bitbuckets.org");
+        AddressBookProtos.Person.Builder personBuilder = AddressBookProtos.Person.newBuilder();
+        personBuilder.setId(1);
+        personBuilder.setName("Jane Smith");
+        personBuilder.setEmail("jsmith@bitbuckets.org");
+
+        AddressBookProtos.Person person = personBuilder.build();
 
         AddressBookProtos.Person john =
         AddressBookProtos.Person.newBuilder()
@@ -38,19 +41,26 @@ public class App {
             .build();
 
         //UDP send/recv cycle
+        byte[] result;
         while(true)
         {
             try {
                     // Send message
-                    byte[] result = person.toByteArray() ;
+                    result = person.toByteArray();
                     packet.setData(result);
                     socket.send(packet);
 
-                    Thread.sleep(500);
+                    Thread.sleep(100);
+
+                    result = john.toByteArray();
+                    packet.setData(result);
+                    socket.send(packet);
+
+                    Thread.sleep(100);
 
                     // Recieve messages
                     socket.receive(packet);
-                    People p = People.parseFrom(packet.getData());
+                    AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(packet.getData());
                     System.out.println(p.getName());
                     System.out.println(p.getId());
                     System.out.println(p.getEmail());
