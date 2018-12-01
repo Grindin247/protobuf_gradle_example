@@ -6,20 +6,18 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class App {
+public class UdpServerApp {
     public static void main(String[] args) throws Exception {
 
-        String host = "127.0.0.1";
+        String host = "192.168.0.3";
         int port = 8000;
 
         //Create a socket
-        DatagramSocket socket = new DatagramSocket();
+        DatagramSocket socket = new DatagramSocket(port);
 
         // Create a packet
-        byte[] data = new byte[4096]; // Max length
-        DatagramPacket packet = new DatagramPacket(data, data.length);
-        packet.setAddress(InetAddress.getByName(host));
-        packet.setPort(port);
+
+        DatagramPacket packet;
 
         //Different ways to configure messages
         AddressBookProtos.Person.Builder personBuilder = AddressBookProtos.Person.newBuilder();
@@ -40,30 +38,30 @@ public class App {
                 .setType(AddressBookProtos.Person.PhoneType.HOME))
             .build();
 
-        //UDP send/recv cycle
-        byte[] result;
+            byte[] result;
+            result = john.toByteArray();
+            byte[] data = new byte[result.length]; // Max length
+
         while(true)
         {
+            System.out.println("Hit Here");
             try {
-                    // Send message
-                    result = person.toByteArray();
-                    packet.setData(result);
-                    socket.send(packet);
-
-                    Thread.sleep(100);
-
-                    result = john.toByteArray();
-                    packet.setData(result);
-                    socket.send(packet);
-
-                    Thread.sleep(100);
-
                     // Recieve messages
+                    packet = new DatagramPacket(data, result.length);
                     socket.receive(packet);
+
                     AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(packet.getData());
                     System.out.println(p.getName());
                     System.out.println(p.getId());
                     System.out.println(p.getEmail());
+                    int clientPort = packet.getPort();
+                    InetAddress clientAddr = packet.getAddress();
+                    Thread.sleep(100);
+
+                    result = john.toByteArray();
+                    packet = new DatagramPacket(data, data.length, clientAddr, clientPort);
+                    packet.setData(result);
+                    socket.send(packet);
         
             } catch (UnknownHostException e){
                 System.out.println("UnknownHostException:" + e.toString());

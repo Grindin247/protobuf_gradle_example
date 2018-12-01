@@ -10,7 +10,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'com.google.protobuf'
 
-mainClassName = 'app.App'
+mainClassName = 'app.UdpServerApp'
 
  buildscript {
   repositories {
@@ -59,6 +59,18 @@ protobuf {
         ofSourceSet('main')
 
     }   
+}
+
+task runJavaServer(type: JavaExec) {
+  classpath sourceSets.main.runtimeClasspath
+  main = "app.UdpServerApp"
+  args "arg1", "arg2"
+}
+
+task runJavaClient(type: JavaExec) {
+  classpath sourceSets.main.runtimeClasspath
+  main = "app.UdpServerApp"
+  args "arg1", "arg2"
 }
 
 // buildscript {
