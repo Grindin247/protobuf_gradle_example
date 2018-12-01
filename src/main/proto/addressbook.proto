@@ -11,7 +11,7 @@ syntax = "proto3";
 package tutorial;
 
 // [START java_declaration]
-option java_package = "main.java.app";
+option java_package = "app";
 option java_outer_classname = "AddressBookProtos";
 // [END java_declaration]
 

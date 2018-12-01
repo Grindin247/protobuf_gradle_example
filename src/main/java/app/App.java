@@ -1,12 +1,12 @@
-package main.java.app;
+package app;
 
 public class App {
     public static void main(String[] args) throws Exception {
 
         AddressBookProtos.Person.Builder person = AddressBookProtos.Person.newBuilder();
         person.setId(1);
-        person.setName("James Callender");
-        person.setEmail("jcallender@bitbuckets.org");
+        person.setName("Jane Smith");
+        person.setEmail("jsmith@bitbuckets.org");
 
         AddressBookProtos.Person temp = person.build();
 

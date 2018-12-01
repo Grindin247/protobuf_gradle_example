@@ -7,7 +7,10 @@
 
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'com.google.protobuf'
+
+mainClassName = 'app.App'
 
  buildscript {
   repositories {
@@ -33,7 +36,7 @@ sourceSets {
         }
         java {
             // include self written and generated code
-            srcDirs 'src/main/java', 'generated-sources/main/java'            
+            srcDirs 'src/main/java', 'src/main/java'            
         }
     }
     // remove the test configuration - at least in your example you don't have a special test proto file
