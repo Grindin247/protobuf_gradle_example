@@ -36,30 +36,49 @@ sourceSets {
         }
         java {
             // include self written and generated code
-            srcDirs 'src/main/java', 'src/main/java'            
+            srcDirs 'src/main/java'  
         }
     }
     // remove the test configuration - at least in your example you don't have a special test proto file
 }
 
 protobuf {
-    // Configure the protoc executable
-    protoc {
-        // Download from repositories
-        artifact = 'com.google.protobuf:protoc:3.6.1'
+  generateProtoTasks.generatedFilesBaseDir = "$projectDir/_autogen_"
+
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        // Generates Python code in the output folder:
+        python { }
+
+        // If you wish to avoid generating Java files:
+       //java { }
+      }
     }
-
-    generateProtoTasks.generatedFilesBaseDir = 'generated-sources'
-
-    generateProtoTasks {
-        // In addition to all(), you may get the task collection by various
-        // criteria:
-
-        // (Java only) returns tasks for a sourceSet
-        ofSourceSet('main')
-
-    }   
+  }
 }
+// protobuf {
+//     // Configure the protoc executable
+//     protoc {
+//         // Download from repositories
+//         artifact = 'com.google.protobuf:protoc:3.6.1'
+//     }
+
+//     generateProtoTasks.generatedFilesBaseDir = 'generated-sources'
+
+//     generateProtoTasks {
+//         // In addition to all(), you may get the task collection by various
+//         // criteria:
+//         // (Java only) returns tasks for a sourceSet
+//         ofSourceSet('main')
+//         all().each { task ->
+//             task.builtins {
+//             // Generates Python code in the output folder:
+//             python { 'main/python' }
+//             }
+//         }
+//     }   
+// }
 
 task runJavaServer(type: JavaExec) {
   classpath sourceSets.main.runtimeClasspath
@@ -69,7 +88,7 @@ task runJavaServer(type: JavaExec) {
 
 task runJavaClient(type: JavaExec) {
   classpath sourceSets.main.runtimeClasspath
-  main = "app.UdpServerApp"
+  main = "app.UdpClientApp"
   args "arg1", "arg2"
 }
 
