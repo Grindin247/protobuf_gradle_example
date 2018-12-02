@@ -55,22 +55,11 @@ public class UdpClientApp {
                     socket.send(packet);
                     Thread.sleep(100);
 
-                    // Recieve header
-                    packet = new DatagramPacket(data, 62);
+                    // Recieve message
+                    packet = new DatagramPacket(data, result.length);
                     socket.receive(packet);
-                    byte[] temp = packet.getData();
 
-                    System.out.println(temp[1]);
-                    int val = temp[1];
-                    int msgLen = SampleMsgs.IdToSize.get(val);
-
-                    //Recieve the rest of the message
-                    packet = new DatagramPacket(data, 2);
-                    socket.receive(packet);
-                    
-                    System.out.println("get the rest of the message");
-
-                    AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(data);
+                    AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(packet.getData());
                     System.out.println(p.getId());
                     System.out.println(p.getName());
                     System.out.println(p.getEmail());
