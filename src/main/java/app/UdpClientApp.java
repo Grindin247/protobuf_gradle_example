@@ -42,9 +42,9 @@ public class UdpClientApp {
 
         byte[] result;
         result = SampleMsgs.javaServerPerson.toByteArray();
-        byte[] data = new byte[result.length]; // Max length
+        byte[] data = new byte[1024]; // Max length
 
-        int HEADER_LEN = 4;
+        //int HEADER_LEN = 4;
         while(true)
         {
             try {
@@ -56,14 +56,21 @@ public class UdpClientApp {
                     Thread.sleep(100);
 
                     // Recieve header
-                    packet = new DatagramPacket(data, HEADER_LEN);
+                    packet = new DatagramPacket(data, 62);
                     socket.receive(packet);
+                    byte[] temp = packet.getData();
+
+                    System.out.println(temp[1]);
+                    int val = temp[1];
+                    int msgLen = SampleMsgs.IdToSize.get(val);
 
                     //Recieve the rest of the message
-                    packet = new DatagramPacket(data, result.length-HEADER_LEN);
+                    packet = new DatagramPacket(data, 2);
                     socket.receive(packet);
+                    
+                    System.out.println("get the rest of the message");
 
-                    AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(packet.getData());
+                    AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(data);
                     System.out.println(p.getId());
                     System.out.println(p.getName());
                     System.out.println(p.getEmail());
