@@ -1,33 +1,41 @@
+#Cleints sends data and receives server replies
+import argparse
 import socket
 import time
 import sys
 
 import addressbook_pb2
 
-def flush_out(string, *arg):
-    print(string.format(arg))
+from sampleMsgs import pythonClientPerson, pythonServerPerson, javaServerPerson
+
+#TODO: gradle task workaround to see prints on the terminal
+def flush_out(string):
+    print(string)
     sys.stdout.flush()
 
-person = addressbook_pb2.Person()
-person.id = 1234
-person.name = "From Python"
-person.email = "python@example.com"
-phone = person.phones.add()
-phone.number = "555-4321"
-phone.type = addressbook_pb2.Person.HOME
+parser = argparse.ArgumentParser(description='Network Params')
+ConnectionInfo = argparse.ArgumentParser()
+ConnectionInfo.add_argument("-n",  default=socket.gethostname())
+ConnectionInfo.add_argument("-p", type=int, default='8000')
+ConnectionInfoParsed = ConnectionInfo.parse_args()
 
-UDP_IP = "192.168.0.3"
-UDP_PORT = 8000
-MESSAGE = "Hello, World!".encode('utf-8')
+# Saves the parsed IP and Port
+UDP_IP = ConnectionInfoParsed.n
+UDP_PORT = ConnectionInfoParsed.p
 
-flush_out ("UDP target IP:", UDP_IP)
-flush_out ("UDP target port:", UDP_PORT)
-flush_out ("message:", MESSAGE)
-
+flush_out ("UDP target IP: {0}".format(UDP_IP))
+flush_out ("UDP target port: {0}".format(UDP_PORT))
 
 sock = socket.socket(socket.AF_INET, # Internet
              socket.SOCK_DGRAM) # UDP
+MESSAGE = pythonClientPerson.SerializeToString()
+msgcnt = 0
 while True:
-    sock.sendto(person.SerializeToString(), (UDP_IP, UDP_PORT))
+    sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+    flush_out('Sent msg {0}'.format(msgcnt))
     time.sleep(0.1)
-    flush_out('SENT!')
+    msgcnt += 1
+
+    buffer = sock.recv(4)
+    print(buffer)
+

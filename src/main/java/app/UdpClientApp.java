@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 
 import javax.lang.model.util.ElementScanner6;
 
-public class UdpServerApp {
+public class UdpClientApp {
     public static void main(String[] args) throws Exception {
         String host = "";
         int port = 0;
@@ -44,26 +44,31 @@ public class UdpServerApp {
         result = SampleMsgs.javaServerPerson.toByteArray();
         byte[] data = new byte[result.length]; // Max length
 
+        int HEADER_LEN = 4;
         while(true)
         {
             try {
-                    // Recieve messages
-                    packet = new DatagramPacket(data, result.length);
+                    //Send message
+                    result = SampleMsgs.javaClientPerson.toByteArray();
+                    packet = new DatagramPacket(data, data.length, InetAddress.getByName(host), port);
+                    packet.setData(result);
+                    socket.send(packet);
+                    Thread.sleep(100);
+
+                    // Recieve header
+                    packet = new DatagramPacket(data, HEADER_LEN);
+                    socket.receive(packet);
+
+                    //Recieve the rest of the message
+                    packet = new DatagramPacket(data, result.length-HEADER_LEN);
                     socket.receive(packet);
 
                     AddressBookProtos.Person p = AddressBookProtos.Person.parseFrom(packet.getData());
-                    System.out.println(p.getName());
                     System.out.println(p.getId());
+                    System.out.println(p.getName());
                     System.out.println(p.getEmail());
-                    int clientPort = packet.getPort();
-                    InetAddress clientAddr = packet.getAddress();
-                    Thread.sleep(100);
 
-                    //Send reply
-                    result = SampleMsgs.javaServerPerson.toByteArray();
-                    packet = new DatagramPacket(data, data.length, clientAddr, clientPort);
-                    packet.setData(result);
-                    socket.send(packet);
+                    Thread.sleep(100);
         
             } catch (UnknownHostException e){
                 System.out.println("UnknownHostException:" + e.toString());

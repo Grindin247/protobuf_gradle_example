@@ -89,10 +89,17 @@ task runJavaClient(type: JavaExec) {
   args "arg1", "arg2"
 }
 
-ext.execPath = "$System.env.PATH" + System.getProperty("path.separator") + "$projectDir/_autogen_/main/python"
 ext.pythonPath = "$System.env.PYTHONPATH" + System.getProperty("path.separator") + "$projectDir/_autogen_/main/python"
-task runPythonClient(type: Exec){
-  environment "PYTHONPATH", execPath
+task runPythonClient(type: Exec) {
+  environment "PYTHONPATH", pythonPath
   workingDir 'src/main/python'
-  commandLine 'python', 'udpClient.py'
+
+  commandLine 'python', "udpClient.py"
+}
+
+ext.pythonPath = "$System.env.PYTHONPATH" + System.getProperty("path.separator") + "$projectDir/_autogen_/main/python"
+task runPythonServer(type: Exec) {
+  environment "PYTHONPATH", pythonPath
+  workingDir 'src/main/python'
+  commandLine 'python', 'udpServer.py'
 }
