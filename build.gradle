@@ -27,6 +27,7 @@ repositories {
 
 dependencies {
     compile 'com.google.protobuf:protobuf-java:3.6.1'
+    runtime files('_autogen_/main/java/app')
 }
 
 sourceSets {
