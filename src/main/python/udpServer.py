@@ -1,35 +1,42 @@
+import argparse
 import socket
 import time
 import sys
 
 import addressbook_pb2
 
+from sampleMsgs import pythonClientPerson, pythonServerPerson, javaServerPerson
+
 def flush_out(string):
     print(string)
     sys.stdout.flush()
 
-person = addressbook_pb2.Person()
-person.id = 1234
-person.name = "From Python Client"
-person.email = "pythonclient@example.com"
-phone = person.phones.add()
-phone.number = "555-4321"
-phone.type = addressbook_pb2.Person.HOME
+parser = argparse.ArgumentParser(description='Network Params')
+ConnectionInfo = argparse.ArgumentParser()
+ConnectionInfo.add_argument("-n",  default='192.168.0.3')#ConnectionInfo.add_argument("-n",  default=socket.gethostname())
+ConnectionInfo.add_argument("-p", type=int, default='8000')
+ConnectionInfoParsed = ConnectionInfo.parse_args()
 
-UDP_IP = "192.168.0.3"
-UDP_PORT = 8000
+# Saves the parsed IP and Port
+UDP_IP = ConnectionInfoParsed.n
+UDP_PORT = ConnectionInfoParsed.p
+
 MESSAGE = person.SerializeToString()
 
-flush_out ("UDP target IP:".format(UDP_IP))
-flush_out ("UDP target port:".format(UDP_PORT))
-flush_out (MESSAGE)
+flush_out ("UDP target IP: {0}".format(UDP_IP))
+flush_out ("UDP target port: {0}".format(UDP_PORT))
 
 
 sock = socket.socket(socket.AF_INET, # Internet
-             socket.SOCK_DGRAM) # UDP
+socket.SOCK_DGRAM) # UDP
+sock.bind(('', UDP_PORT))
 while True:
-    data = sock.recv(50)
-    addressbook_pb2.Person.ParseFromString(data)
+    data = sock.recvfrom(62)
+    p = addressbook_pb2.Person()
+    p.ParseFromString(data)
+    flush_out(p.getName())
+    flush_out(p.getId())
+    flush_out(p.getEmail())
 
     #TODO: Get client IP and send out python server messageffff
     time.sleep(0.1)
