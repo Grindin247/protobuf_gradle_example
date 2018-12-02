@@ -15,7 +15,7 @@ def flush_out(string):
 
 parser = argparse.ArgumentParser(description='Network Params')
 ConnectionInfo = argparse.ArgumentParser()
-ConnectionInfo.add_argument("-n",  default=socket.gethostname())
+ConnectionInfo.add_argument("-n",  default='192.168.0.3')#ConnectionInfo.add_argument("-n",  default=socket.gethostname())
 ConnectionInfo.add_argument("-p", type=int, default='8000')
 ConnectionInfoParsed = ConnectionInfo.parse_args()
 
@@ -35,7 +35,4 @@ while True:
     flush_out('Sent msg {0}'.format(msgcnt))
     time.sleep(0.1)
     msgcnt += 1
-
-    buffer = sock.recv(4)
-    print(buffer)
 

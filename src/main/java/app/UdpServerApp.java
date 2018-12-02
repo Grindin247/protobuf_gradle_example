@@ -33,6 +33,19 @@ public class UdpServerApp {
         System.out.println("Host: " + host);
         System.out.println("Port: " +  Integer.toString(port));
 
+        byte[] result;
+        result = SampleMsgs.javaServerPerson.toByteArray();
+        System.out.println("js: " +  Integer.toString(result.length));
+
+        result = SampleMsgs.javaClientPerson.toByteArray();
+        System.out.println("jc: " +  Integer.toString(result.length));
+
+        result = SampleMsgs.pythonClientPerson.toByteArray();
+        System.out.println("pc: " +  Integer.toString(result.length));
+
+        result = SampleMsgs.pythonServerPerson.toByteArray();
+        System.out.println("ps: " +  Integer.toString(result.length));
+
         //Create a socket
         DatagramSocket socket = new DatagramSocket(port);
 
@@ -40,7 +53,6 @@ public class UdpServerApp {
 
         DatagramPacket packet;
 
-        byte[] result;
         result = SampleMsgs.javaServerPerson.toByteArray();
         byte[] data = new byte[result.length]; // Max length
 

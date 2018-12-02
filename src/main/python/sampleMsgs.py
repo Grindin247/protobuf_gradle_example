@@ -18,16 +18,16 @@ phone.type = addressbook_pb2.Person.HOME
 
 javaServerPerson = addressbook_pb2.Person()
 javaServerPerson.id = 3
-javaServerPerson.name = "From Java Server"
-javaServerPerson.email = "javaserver@example.com"
+javaServerPerson.name = "From Java Server__"
+javaServerPerson.email = "javaserver__@example.com"
 phone = javaServerPerson.phones.add()
 phone.number = "555-4321"
 phone.type = addressbook_pb2.Person.HOME
 
 javaClientPerson = addressbook_pb2.Person()
 javaClientPerson.id = 4
-javaClientPerson.name = "From Java Client"
-javaClientPerson.email = "javaclient@example.com"
+javaClientPerson.name = "From Java Client__"
+javaClientPerson.email = "javaclient__@example.com"
 phone = javaClientPerson.phones.add()
 phone.number = "555-4321"
 phone.type = addressbook_pb2.Person.HOME
