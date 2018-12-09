@@ -34,7 +34,7 @@ public class UdpClientApp {
         System.out.println("Port: " +  Integer.toString(port));
 
         //Create a socket
-        DatagramSocket socket = new DatagramSocket(port);
+        DatagramSocket socket = new DatagramSocket();
 
         // Create a packet
 
@@ -42,7 +42,7 @@ public class UdpClientApp {
 
         byte[] result;
         result = SampleMsgs.javaServerPerson.toByteArray();
-        byte[] data = new byte[1024]; // Max length
+        byte[] data = new byte[result.length]; // Max length
 
         //int HEADER_LEN = 4;
         while(true)
